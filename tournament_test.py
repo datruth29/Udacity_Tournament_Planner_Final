@@ -88,8 +88,10 @@ def testReportMatches():
     createPlayer("Diane Grant")
     standings = playerStandings()
     [id1, id2, id3, id4] = [row[0] for row in standings]
-    reportMatch(id1, id2)
-    reportMatch(id3, id4)
+    game1 = createMatch(id1, id2, 1, 1)
+    game2 = createMatch(id3, id4, 1, 1)
+    reportMatch(id1, id2, game1)
+    reportMatch(id3, id4, game2)
     standings = playerStandings()
     for (i, n, w, m) in standings:
         if m != 1:

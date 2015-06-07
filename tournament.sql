@@ -40,14 +40,16 @@ CREATE TABLE game(
     tournament_id integer REFERENCES tournament,
     player1_id integer REFERENCES player,
     player2_id integer REFERENCES player,
-    round integer not null
+    round integer not null,
+    UNIQUE (tournament_id, player1_id, player2_id, round)
 );
 
 CREATE TABLE game_result(
     game_result_id serial primary key not null,
     game_id integer REFERENCES game ON DELETE CASCADE,
     player_id integer REFERENCES player,
-    result game_result_types
+    result game_result_types,
+    UNIQUE (game_id, player_id)
 );
 
 -- VIEWS

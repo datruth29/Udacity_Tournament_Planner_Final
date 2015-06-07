@@ -142,13 +142,60 @@ def playerStandings():
     return results
 
 
+def createMatch(player1_id, player2_id, tournament_id, current_round):
+    """Creates a match between players for a given tournament id and round
+
+    Args:
+        player1_id: id of the first player
+        player2_id: id of the second player
+        tournament_id: id of the tournament the match is being played in
+        current_round: the round of the tournament the match is being played in
+
+    Returns:
+        game_id: id of the game that was just created
+    """
+    conn = connect()
+    cursor = conn.cursor()
+
+    query = """insert into game (tournament_id, player1_id, player2_id, round)
+                values (%s, %s, %s, %s)
+                returning game_id;"""
+    cursor.execute(query, (tournament_id, player1_id, player2_id, current_round,))
+    game_id = cursor.fetchone()[0]
+
+    conn.commit()
+    conn.close()
+
+    return game_id
+
+
 def reportMatch(winner_id, loser_id, match_id, draw=False):
     """Records the outcome of a single match between two players.
 
     Args:
-      winner:  the id number of the player who won
-      loser:  the id number of the player who lost
+      winner_id:  the id number of the player who won.
+      loser_id:  the id number of the player who lost.
+      match_id: the id number of the match.
+      draw: set if the match was a draw. Default = False
     """
+    winner_outcome = 'win'
+    loser_outcome = 'lose'
+
+    if draw:
+        winner_outcome, loser_outcome = ('draw', 'draw')
+    else:
+        winner_outcome, loser_outcome = ('win', 'lose')
+
+    conn = connect()
+    cursor = conn.cursor()
+
+    query = cursor.mogrify("""insert into game_result (game_id, player_id, result)
+                            values (%s, %s, %s), (%s, %s, %s);""",
+                           (match_id, winner_id, winner_outcome,
+                            match_id, loser_id, loser_outcome))
+    cursor.execute(query)
+    conn.commit()
+    conn.close()
 
 
 def swissPairings():
