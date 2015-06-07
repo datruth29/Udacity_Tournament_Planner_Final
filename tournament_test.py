@@ -41,10 +41,10 @@ def testRegister():
 def testRegisterCountDelete():
     deleteMatches()
     deletePlayers()
-    createPlayer("Markov Chaney")
-    createPlayer("Joe Malik")
-    createPlayer("Mao Tsu-hsi")
-    createPlayer("Atlanta Hope")
+    registerPlayer(createPlayer("Markov Chaney"), 1)
+    registerPlayer(createPlayer("Joe Malik"), 1)
+    registerPlayer(createPlayer("Mao Tsu-hsi"), 1)
+    registerPlayer(createPlayer("Atlanta Hope"), 1)
     c = countPlayers()
     if c != 4:
         raise ValueError(
@@ -107,13 +107,15 @@ def testPairings():
     deleteMatches()
     deletePlayers()
     createPlayer("Twilight Sparkle")
-    createPlayer("Fluttershy")
-    createPlayer("Applejack")
+    createPlayer("Flutter Shy")
+    createPlayer("Apple Jack")
     createPlayer("Pinkie Pie")
     standings = playerStandings()
     [id1, id2, id3, id4] = [row[0] for row in standings]
-    reportMatch(id1, id2)
-    reportMatch(id3, id4)
+    game1 = createMatch(id1, id2, 1, 1)
+    game2 = createMatch(id3, id4, 1, 1)
+    reportMatch(id1, id2, game1)
+    reportMatch(id3, id4, game2)
     pairings = swissPairings()
     if len(pairings) != 2:
         raise ValueError(
@@ -128,14 +130,14 @@ def testPairings():
 
 
 if __name__ == '__main__':
-#    testDeleteMatches()
-#    testDelete()
-#    testCount()
-#    testRegister()
-#    testRegisterCountDelete()
-#    testStandingsBeforeMatches()
-#    testReportMatches()
-#    testPairings()
+    testDeleteMatches()
+    testDelete()
+    testCount()
+    testRegister()
+    testRegisterCountDelete()
+    testStandingsBeforeMatches()
+    testReportMatches()
+    testPairings()
     print "Success!  All tests pass!"
 
 

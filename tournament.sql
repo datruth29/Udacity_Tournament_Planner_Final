@@ -25,7 +25,7 @@ CREATE TABLE player(
     player_id serial primary key not null,
     firstname text not null,
     middlename text,
-    lastname text not null
+    lastname text NOT NULL
 );
 
 CREATE TABLE registrations(

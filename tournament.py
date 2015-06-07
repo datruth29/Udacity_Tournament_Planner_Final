@@ -4,6 +4,7 @@
 #
 
 import psycopg2
+import itertools
 
 
 def connect():
@@ -132,7 +133,8 @@ def playerStandings():
     conn = connect()
     cursor = conn.cursor()
 
-    query = """select player_id, firstname, wins, wins+loses+draws as matches
+    query = """select player_id, concat(firstname, ' ' , lastname) as name,
+                wins, wins+loses+draws as matches
                 from tournament_standings;"""
 
     cursor.execute(query)
@@ -213,3 +215,22 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
+
+    # TODO: Make this work for odd number of players
+    # TODO: Make sure this adds players correctly
+    # TODO: Ensure that rematches aren't made
+    # TODO: Try to implement this into the database
+    conn = connect()
+    cursor = conn.cursor()
+
+    cursor.execute("""select player_id, concat(firstname, ' ' , lastname) as name
+                   from tournament_standings order by draws, wins desc""")
+    standings = cursor.fetchall()
+
+    result = [tuple(itertools.chain(*standings[n:n+2]))
+              for n in range(0, len(standings), 2)]
+
+    conn.commit()
+    conn.close()
+
+    return result
